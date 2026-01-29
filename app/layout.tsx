@@ -1,19 +1,24 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// app/layout.tsx
 
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'MentorSync - Global Scheduling Made Simple',
+  description: 'Connect with tutors across timezones. Schedule sessions effortlessly.',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body
-      >
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
-  );
+  )
 }
