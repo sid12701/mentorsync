@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-blue-50 to-white p-8">
       <div className="max-w-4xl text-center">
         <h1 className="mb-6 text-5xl font-bold tracking-tight text-gray-900">
           MentorSync
