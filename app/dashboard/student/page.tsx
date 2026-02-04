@@ -1,11 +1,14 @@
-// app/dashboard/student/page.tsx
+// app/dashboard/student/page.tsx (UPDATE the existing file)
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from "../../../components/ui/button"
+import { getUpcomingBookings } from '@/features/booking/queries'
+import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Calendar } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from '../../../components/ui/avatar'
+import { BookingCard } from '../../../features/booking/components/booking-card';
+import { Calendar, Search } from 'lucide-react'
 
 export default async function StudentDashboardPage() {
   const supabase = await createClient()
@@ -17,16 +20,7 @@ export default async function StudentDashboardPage() {
   }
 
   // Fetch upcoming bookings
-  const { data: bookings } = await supabase
-    .from('bookings')
-    .select(`
-      *,
-      tutor:profiles!bookings_tutor_id_fkey(full_name, avatar_url)
-    `)
-    .eq('student_id', user.id)
-    .gte('start_time', new Date().toISOString())
-    .order('start_time', { ascending: true })
-    .limit(5)
+  const bookings = await getUpcomingBookings(user.id, 'student')
 
   return (
     <div className="space-y-8">
@@ -49,34 +43,21 @@ export default async function StudentDashboardPage() {
           {bookings && bookings.length > 0 ? (
             <div className="space-y-4">
               {bookings.map((booking) => (
-                <div
-                  key={booking.id}
-                  className="flex items-center justify-between rounded-lg border p-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <Calendar className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="font-medium">
-                        {booking.tutor?.full_name || 'Tutor'}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {new Date(booking.start_time).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={booking.meeting_url} target="_blank">
-                      Join Meeting
-                    </Link>
-                  </Button>
-                </div>
+                <BookingCard key={booking.id} booking={booking} userRole="student" />
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">No upcoming sessions</p>
+            <div className="text-center py-12">
+              <Calendar className="mx-auto h-12 w-12 text-gray-300" />
+              <p className="mt-4 text-gray-600">No upcoming sessions</p>
+              <p className="mt-1 text-sm text-gray-500 mb-4">
+                Book a session with a tutor to get started
+              </p>
               <Button asChild>
-                <Link href="/tutors">Find a Tutor</Link>
+                <Link href="/tutors">
+                  <Search className="mr-2 h-4 w-4" />
+                  Find a Tutor
+                </Link>
               </Button>
             </div>
           )}

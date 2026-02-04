@@ -72,7 +72,7 @@ export async function updateProfile(userId: string, input: Partial<ProfileInput>
 
     const {data: {user}, error: authError } = await  supabase.auth.getUser();
 
-    if(authError || !user || user.id ! == userId){
+    if(authError || !user || user.id !== userId){
         return{ 
             success: false,
             error: 'Unauthorized'

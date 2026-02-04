@@ -4,7 +4,7 @@ import { AvailabilityPattern } from './types';
 export async function getPatternsByTutor(tutorId: string): Promise<AvailabilityPattern[]>{
     const supabase = await createClient();
 
-    const {data, error} = await supabase.from('availability_patterns').select('*').eq('tutor_id',tutorId).eq('isActive', true).order('day_of_week',{ascending:true}).order('start_time',{ascending: true})
+    const {data, error} = await supabase.from('availability_patterns').select('*').eq('tutor_id',tutorId).eq('is_active', true).order('day_of_week',{ascending:true}).order('start_time',{ascending: true})
 
     if(error){
         console.error("Error fetching availablity patterns: ", error)

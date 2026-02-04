@@ -21,7 +21,7 @@ export async function getAvailableSlots (tutorId: string, date:string, durationM
     const dateObj = new Date(`${date}T12:00:00Z`)
     const dayOfWeek = getDayOfWeekInTimezone(dateObj, tutorTimeZone)
 
-    const{data: patterns , error: patternsError} = await supabase.from('availability_patterns').select('*').eq('tutor_id',tutorId).eq('day_of_week', dayOfWeek).eq('is-active', true)
+    const{data: patterns , error: patternsError} = await supabase.from('availability_patterns').select('*').eq('tutor_id',tutorId).eq('day_of_week', dayOfWeek).eq('is_active', true)
 
     if(patternsError){
         console.error('Error in fetching patterns: ', patternsError)
@@ -54,7 +54,7 @@ export async function getAvailableSlots (tutorId: string, date:string, durationM
 
     const {start: dayStartUTC , end: dayEndUTC} = getDayBoundariesInUTC(date,tutorTimeZone)
 
-    const {data: bookings, error: bookingsError}= await supabase.from('bookings').select('start_time,end_time').eq('tutor_id',tutorId).neq('status', 'cancelled').gte('start_time',dayStartUTC.toISOString()).lt('start_time', dayEndUTC.toISOString)
+    const {data: bookings, error: bookingsError}= await supabase.from('bookings').select('start_time,end_time').eq('tutor_id',tutorId).neq('status', 'cancelled').gte('start_time',dayStartUTC.toISOString()).lt('start_time', dayEndUTC.toISOString())
 
     if(bookingsError){
         console.error('Error fetching bookings:', bookingsError)
