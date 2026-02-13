@@ -21,6 +21,8 @@ import { format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { Calendar, Clock, DollarSign, Video } from 'lucide-react'
 import type { TimeSlot } from '@/features/availability/types'
+import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
 
 interface BookingDialogProps {
   isOpen: boolean
@@ -44,6 +46,8 @@ export function BookingDialog({
   const [note, setNote] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -60,6 +64,7 @@ export function BookingDialog({
   async function handleBooking() {
     setIsLoading(true)
     setError(null)
+    const toastId = toast.loading('Booking your session...')
 
     const result = await bookSlot({
       tutorId,
@@ -70,19 +75,39 @@ export function BookingDialog({
     })
 
     if (!result.success) {
+      toast.dismiss(toastId)
       if (result.error === 'SLOT_NO_LONGER_AVAILABLE') {
         setError('This slot is no longer available. Please select another time.')
+        toast.error('Slot No Longer Available', {
+          description: 'Someone else just booked this time. Please select another slot.',
+        })
       } else if (result.error.includes('Price has changed')) {
         setError(result.error)
+        toast.error('Price Changed', {
+          description: result.error,
+        })
       } else {
         setError(result.error)
+        toast.error('Booking Failed', {
+          description: result.error,
+        })
+        setIsLoading(false)
       }
       setIsLoading(false)
     } else {
       // Success!
+      toast.dismiss(toastId)
       setIsLoading(false)
       onSuccess()
-    }
+      toast.success('Successfully Booked!', {
+        description: `Your session with ${tutorName} on ${format(startLocal, 'MMM d')} at ${format(startLocal, 'h:mm a')} has been confirmed.`,
+        duration: 5000,
+      })
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 1000)  // 1 second delay so user sees the toast
+  
+      }
   }
 
   return (
