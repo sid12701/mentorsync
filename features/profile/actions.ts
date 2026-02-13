@@ -42,7 +42,7 @@ export async function createProfile(input: ProfileInput):Promise<AuthResponse>{
     const profileData = {
         id: user?.id,
         role: data?.role,
-        full_name: data.fullname,
+        full_name: data.fullName,
         timezone: data.timezone,
         avatar_url: data.avatarUrl || null,
         ...(data.role === "tutor" && { 
@@ -91,7 +91,7 @@ export async function updateProfile(userId: string, input: Partial<ProfileInput>
 
     const updateData : any = {}
 
-    if (input.fullname) updateData.full_name = input.fullname
+    if (input.fullName) updateData.full_name = input.fullName
     if (input.timezone) updateData.timezone = input.timezone
     if (input.avatarUrl !== undefined) updateData.avatar_url = input.avatarUrl || null
     
