@@ -59,7 +59,7 @@ export function ProfileForm({ role, userEmail, onBack }: ProfileFormProps) {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       role,
-      fullname: '',
+      fullName: '',
       timezone: userTimezone,
       avatarUrl: '',
       ...(role === 'tutor' && {
@@ -124,7 +124,7 @@ export function ProfileForm({ role, userEmail, onBack }: ProfileFormProps) {
           {/* Full Name */}
           <FormField
             control={form.control}
-            name="fullname"
+            name="fullName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Full Name</FormLabel>
